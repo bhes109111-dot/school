@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>碧華印記｜新北市三重區碧華國小</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           CSS 變數與全域設定 (Global & Variables)
+        ========================================= */
+        :root {
+            --bg-color: #0a0a0a;
+            --text-primary: #e0e0e0;
+            --text-muted: #888888;
+            --accent-gold: #c5a059;
+            --font-title: 'Noto Serif TC', serif;
+            --font-body: 'Noto Sans TC', sans-serif;
+            --letterbox-height: 8vh;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           電影美學特效 (Cinematic Effects)
+        ========================================= */
+        /* 1. 膠卷雜訊 (Film Grain) */
+        .film-grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.12;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+
+        /* 2. 上下黑邊 (Letterbox) */
+        .letterbox {
+            position: fixed;
+            left: 0;
+            width: 100vw;
+            height: var(--letterbox-height);
+            background-color: #000;
+            z-index: 9998;
+        }
+        .letterbox.top { top: 0; }
+        .letterbox.bottom { bottom: 0; }
+
+        /* =========================================
+           第一幕：全幅首頁 (Hero Section)
+        ========================================= */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            /* 視差滾動效果 */
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+            background-image: url('https://raw.githubusercontent.com/bhes109111-dot/school/main/photo1.jpg');
+            padding: 0 20px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(10,10,10,0.9) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: var(--font-title);
+            font-size: clamp(2.5rem, 5vw, 5rem);
+            color: var(--accent-gold);
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+            text-shadow: 2px 4px 10px rgba(0,0,0,0.8);
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 1.5vw, 1.5rem);
+            color: var(--text-primary);
+            letter-spacing: 0.1em;
+            font-weight: 300;
+        }
+
+        /* =========================================
+           敘事章節 (Narrative Sections)
+        ========================================= */
+        .chapter {
+            padding: 15vh 10vw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 5vw;
+            min-height: 80vh;
+        }
+
+        .chapter:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .text-content {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .text-content h2 {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .text-content p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .image-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* =========================================
+           拍立得 / 畫框設計 (Polaroid Frame)
+        ========================================= */
+        .polaroid {
+            background: #fcfcfc;
+            padding: 15px 15px 60px 15px;
+            box-shadow: 10px 15px 30px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0,0,0,0.05);
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .chapter:nth-child(odd) .polaroid { transform: rotate(-3deg); }
+        .chapter:nth-child(even) .polaroid { transform: rotate(3deg); }
+        
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.02) !important;
+        }
+
+        .polaroid img {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            display: block;
+            filter: grayscale(20%) contrast(1.1);
+        }
+
+        /* =========================================
+           外部連結按鈕 (External Links)
+        ========================================= */
+        .external-links {
+            text-align: center;
+            padding: 5vh 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .cinematic-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            letter-spacing: 0.1em;
+            padding: 12px 30px;
+            border: 1px solid var(--text-muted);
+            border-radius: 2px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cinematic-btn:hover {
+            color: var(--bg-color);
+            background-color: var(--accent-gold);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* =========================================
+           滾動揭示動畫 (Scroll Reveal)
+        ========================================= */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease-out, transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.2s; }
+
+        /* =========================================
+           頁尾 (Footer)
+        ========================================= */
+        footer {
+            text-align: center;
+            padding: 2vh 20px;
+            padding-bottom: calc(var(--letterbox-height) + 4vh);
+            font-family: var(--font-body);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            background: linear-gradient(to top, rgba(0,0,0,1), transparent);
+        }
+
+        /* =========================================
+           響應式設計 (RWD for Mobile)
+        ========================================= */
+        @media (max-width: 768px) {
+            :root {
+                --letterbox-height: 4vh;
+            }
+            .chapter, .chapter:nth-child(even) {
+                flex-direction: column;
+                padding: 10vh 5vw;
+                text-align: center;
+            }
+            .text-content {
+                max-width: 100%;
+                margin-bottom: 3rem;
+            }
+            .text-content p {
+                text-align: left;
+            }
+            .chapter:nth-child(odd) .polaroid,
+            .chapter:nth-child(even) .polaroid {
+                transform: rotate(0deg);
+                padding: 10px 10px 40px 10px;
+            }
+            .polaroid img {
+                max-width: 100%;
+            }
+            .external-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            .cinematic-btn {
+                width: 80%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="film-grain"></div>
+    <div class="letterbox top"></div>
+    <div class="letterbox bottom"></div>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content reveal">
+                <h1>碧華印記</h1>
+                <p class="reveal delay-1">新北市三重區碧華國小 —— 承載世代記憶的學習殿堂</p>
+            </div>
+        </section>
+
+        <section class="chapter">
+            <div class="text-content reveal">
+                <h2>晨曦中的鐘聲</h2>
+                <p>當第一道曙光溫柔地撫過三重的街道，碧華國小的校門便敞開了懷抱。清脆的鐘聲不僅是作息的指引，更是喚醒這座校園生命力的序曲。</p>
+                <p>無數個早晨，孩子們踏著輕快的步伐步入校園，那稚嫩的臉龐上寫滿了對未知世界的好奇與渴望。這裡是夢想起航的港灣，每一個黎明，都孕育著無限的可能。</p>
+            </div>
+            <div class="image-content reveal delay-1">
+                <div class="polaroid">
+                    <img src="https://raw.githubusercontent.com/bhes109111-dot/school/main/photo2.jpg" alt="碧華國小晨曦">
+                </div>
+            </div>
+        </section>
+
+        <section class="chapter">
+            <div class="text-content reveal">
+                <h2>穿梭於長廊的嬉鬧</h2>
+                <p>陽光透過走廊的窗櫺，在磨石子地板上灑下斑駁的光影。下課鐘響，長廊瞬間化為孩子們的專屬樂園。追逐的腳步聲、清脆的笑語，交織成一首充滿活力的青春交響樂。</p>
+                <p>這些看似平凡的日常，卻是童年最珍貴的切片。在相互扶持與嬉鬧中，他們學會了分享、理解，也結下了受用一生的純真友誼。</p>
+            </div>
+            <div class="image-content reveal delay-1">
+                <div class="polaroid">
+                    <img src="https://raw.githubusercontent.com/bhes109111-dot/school/main/photo3.jpg" alt="長廊上的光影">
+                </div>
+            </div>
+        </section>
+
+        <section class="chapter">
+            <div class="text-content reveal">
+                <h2>知識的萌芽與茁壯</h2>
+                <p>教室裡，黑板上的粉筆字訴說著宇宙的浩瀚與歷史的深邃。師長們以耐心為養分，灌溉著每一株渴望成長的幼苗。在碧華的沃土上，知識不再是生硬的文字，而是探索世界的鑰匙。</p>
+                <p>一次次的舉手發問、一次次的恍然大悟，見證了智慧的萌芽。在這裡，每個孩子都能找到屬於自己的光芒，向下扎根，向上茁壯。</p>
+            </div>
+            <div class="image-content reveal delay-1">
+                <div class="polaroid">
+                    <img src="https://raw.githubusercontent.com/bhes109111-dot/school/main/photo4.jpg" alt="教室裡的學習時光">
+                </div>
+            </div>
+        </section>
+
+        <section class="chapter">
+            <div class="text-content reveal">
+                <h2>操場上的金色夕陽</h2>
+                <p>當夕陽的餘暉將操場染成一片璀璨的燦金，紅色的跑道彷彿無限延伸至未來的彼端。汗水揮灑在球場上，那是青春最純粹的證明。</p>
+                <p>夕陽無限好，而碧華的故事永不落幕。一代又一代的學子從這裡畢業，帶著母校的祝福走向更廣闊的世界，而這片校園，將永遠在此守候，珍藏著他們最美好的歲月。</p>
+            </div>
+            <div class="image-content reveal delay-1">
+                <div class="polaroid">
+                    <img src="https://raw.githubusercontent.com/bhes109111-dot/school/main/photo5.jpg" alt="操場上的夕陽">
+                </div>
+            </div>
+        </section>
+
+        <section class="external-links reveal">
+            <a href="https://www.bhes.ntpc.edu.tw/" target="_blank" rel="noopener noreferrer" class="cinematic-btn">官方網站</a>
+            <a href="https://www.facebook.com/pages/%E7%A2%A7%E8%8F%AF%E5%9C%8B%E5%B0%8F/172902606090128" target="_blank" rel="noopener noreferrer" class="cinematic-btn">Facebook 粉絲專頁</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>陳彥廷程式設計 | 網頁與作品及製作</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const reveals = document.querySelectorAll(".reveal");
+
+            const observerOptions = {
+                root: null,
+                rootMargin: "0px",
+                threshold: 0.2
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            reveals.forEach(reveal => {
+                observer.observe(reveal);
+            });
+        });
+    </script>
+</body>
+</html>
